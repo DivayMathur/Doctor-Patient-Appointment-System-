@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Edit Doctor{% endblock %}
+{% block content %}
+
+<div class="breadcrumb">
+  <a href="{{ url_for('doctors_list') }}">👨‍⚕️ Doctors</a>
+  <span class="sep">›</span>
+  <a href="{{ url_for('doctors_detail', id=doctor.id) }}">Dr. {{ doctor.name }}</a>
+  <span class="sep">›</span> Edit
+</div>
+
+<div class="page-header">
+  <div><h1>✏️ Edit Doctor</h1></div>
+</div>
+
+<div class="card">
+  <div class="card-header"><h2>Update Doctor Information</h2></div>
+  <div class="card-body">
+    <form method="POST">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input class="form-control" id="name" name="name" type="text"
+                 value="{{ doctor.name }}" required>
+        </div>
+        <div class="form-group">
+          <label for="specialization">Specialization *</label>
+          <select class="form-control" id="specialization" name="specialization" required>
+            <option value="">-- Select --</option>
+            {% for spec in ['Cardiology','Dermatology','Gastroenterology','General Medicine',
+                            'Gynecology','Neurology','Oncology','Ophthalmology','Orthopedics',
+                            'Pediatrics','Psychiatry','Radiology','Surgery','Urology','ENT'] %}
+              <option {{ 'selected' if doctor.specialization == spec else '' }}>{{ spec }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input class="form-control" id="phone" name="phone" type="tel"
+                 value="{{ doctor.phone or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input class="form-control" id="email" name="email" type="email"
+                 value="{{ doctor.email or '' }}">
+        </div>
+        <div class="form-group" style="grid-column: span 2;">
+          <label for="available_days">Available Days</label>
+          <input class="form-control" id="available_days" name="available_days" type="text"
+                 value="{{ doctor.available_days or '' }}">
+        </div>
+      </div>
+      <div class="action-group" style="margin-top:.5rem">
+        <button class="btn btn-warning" type="submit">💾 Update Doctor</button>
+        <a href="{{ url_for('doctors_detail', id=doctor.id) }}" class="btn btn-secondary">✕ Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

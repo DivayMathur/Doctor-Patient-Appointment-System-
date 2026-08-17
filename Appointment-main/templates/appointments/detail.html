@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Appointment #{{ appt.id }}{% endblock %}
+{% block content %}
+
+<div class="breadcrumb">
+  <a href="{{ url_for('appointments_list') }}">📅 Appointments</a>
+  <span class="sep">›</span> Appointment #{{ appt.id }}
+</div>
+
+<div class="page-header">
+  <div>
+    <h1>📅 Appointment #{{ appt.id }}</h1>
+    <p>
+      {% if appt.status == 'Scheduled' %}<span class="badge badge-info">📅 Scheduled</span>
+      {% elif appt.status == 'Completed' %}<span class="badge badge-success">✅ Completed</span>
+      {% else %}<span class="badge badge-danger">❌ Cancelled</span>{% endif %}
+    </p>
+  </div>
+  <div class="action-group">
+    <a href="{{ url_for('appointments_edit', id=appt.id) }}" class="btn btn-warning">✏️ Edit</a>
+    <form method="POST" action="{{ url_for('appointments_delete', id=appt.id) }}"
+          onsubmit="return confirm('Delete Appointment #{{ appt.id }}?')">
+      <button class="btn btn-danger" type="submit">🗑 Delete</button>
+    </form>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+  <div class="card">
+    <div class="card-header"><h2>🧑 Patient Details</h2></div>
+    <div class="card-body">
+      <div class="detail-item">
+        <div class="label">Name</div>
+        <div class="value">
+          <a href="{{ url_for('patients_detail', id=appt.patient_id) }}"
+             style="color:var(--primary-light)">{{ appt.patient_name }}</a>
+        </div>
+      </div>
+      <div class="detail-item">
+        <div class="label">📞 Phone</div>
+        <div class="value">{{ appt.patient_phone or '—' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>👨‍⚕️ Doctor Details</h2></div>
+    <div class="card-body">
+      <div class="detail-item">
+        <div class="label">Name</div>
+        <div class="value">
+          <a href="{{ url_for('doctors_detail', id=appt.doctor_id) }}"
+             style="color:var(--primary-light)">Dr. {{ appt.doctor_name }}</a>
+        </div>
+      </div>
+      <div class="detail-item">
+        <div class="label">🩺 Specialization</div>
+        <div class="value"><span class="badge badge-primary">{{ appt.specialization }}</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:1.25rem">
+  <div class="card-header"><h2>📋 Appointment Information</h2></div>
+  <div class="card-body">
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="label">📅 Date</div>
+        <div class="value" style="font-size:1.2rem">{{ appt.appointment_date }}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">🕐 Time</div>
+        <div class="value" style="font-size:1.2rem">{{ appt.appointment_time }}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">🩺 Reason for Visit</div>
+        <div class="value">{{ appt.reason or 'Not specified' }}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">📊 Status</div>
+        <div class="value">
+          {% if appt.status == 'Scheduled' %}<span class="badge badge-info">📅 Scheduled</span>
+          {% elif appt.status == 'Completed' %}<span class="badge badge-success">✅ Completed</span>
+          {% else %}<span class="badge badge-danger">❌ Cancelled</span>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

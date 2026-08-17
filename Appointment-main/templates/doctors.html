@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Doctors</h2>
+
+<a href="/add_doctor">Add Doctor</a>
+
+<table border="1">
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Specialization</th>
+<th>Action</th>
+</tr>
+
+{% for d in doctors %}
+
+<tr>
+<td>{{d.id}}</td>
+<td>{{d.name}}</td>
+<td>{{d.specialization}}</td>
+<td>
+<a href="/delete_doctor/{{d.id}}">Delete</a>
+</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

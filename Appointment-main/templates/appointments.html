@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Appointments</h2>
+
+<a href="/add_appointment">Add Appointment</a>
+
+<table border="1">
+
+<tr>
+<th>ID</th>
+<th>Doctor</th>
+<th>Patient</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+
+{% for a in appointments %}
+
+<tr>
+<td>{{a.id}}</td>
+<td>{{a.doctor}}</td>
+<td>{{a.patient}}</td>
+<td>{{a.date}}</td>
+
+<td>
+<a href="/delete_appointment/{{a.id}}">Delete</a>
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

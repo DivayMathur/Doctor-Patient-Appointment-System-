@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Edit Appointment{% endblock %}
+{% block content %}
+
+<div class="breadcrumb">
+  <a href="{{ url_for('appointments_list') }}">📅 Appointments</a>
+  <span class="sep">›</span>
+  <a href="{{ url_for('appointments_detail', id=appt.id) }}">Appointment #{{ appt.id }}</a>
+  <span class="sep">›</span> Edit
+</div>
+
+<div class="page-header">
+  <div><h1>✏️ Edit Appointment #{{ appt.id }}</h1></div>
+</div>
+
+<div class="card">
+  <div class="card-header"><h2>Update Appointment Details</h2></div>
+  <div class="card-body">
+    <form method="POST">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="patient_id">Patient *</label>
+          <select class="form-control" id="patient_id" name="patient_id" required>
+            <option value="">-- Select Patient --</option>
+            {% for p in patients %}
+              <option value="{{ p.id }}" {{ 'selected' if appt.patient_id == p.id else '' }}>
+                {{ p.name }} (ID: {{ p.id }})
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="doctor_id">Doctor *</label>
+          <select class="form-control" id="doctor_id" name="doctor_id" required>
+            <option value="">-- Select Doctor --</option>
+            {% for d in doctors %}
+              <option value="{{ d.id }}" {{ 'selected' if appt.doctor_id == d.id else '' }}>
+                Dr. {{ d.name }} — {{ d.specialization }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="appointment_date">Date *</label>
+          <input class="form-control" id="appointment_date" name="appointment_date"
+                 type="date" value="{{ appt.appointment_date }}" required>
+        </div>
+        <div class="form-group">
+          <label for="appointment_time">Time *</label>
+          <input class="form-control" id="appointment_time" name="appointment_time"
+                 type="time" value="{{ appt.appointment_time }}" required>
+        </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select class="form-control" id="status" name="status">
+            <option value="Scheduled"  {{ 'selected' if appt.status == 'Scheduled'  else '' }}>📅 Scheduled</option>
+            <option value="Completed"  {{ 'selected' if appt.status == 'Completed'  else '' }}>✅ Completed</option>
+            <option value="Cancelled"  {{ 'selected' if appt.status == 'Cancelled'  else '' }}>❌ Cancelled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="reason">Reason for Visit</label>
+          <input class="form-control" id="reason" name="reason" type="text"
+                 value="{{ appt.reason or '' }}" placeholder="e.g. Regular checkup">
+        </div>
+      </div>
+      <div class="action-group" style="margin-top:.5rem">
+        <button class="btn btn-warning" type="submit">💾 Update Appointment</button>
+        <a href="{{ url_for('appointments_detail', id=appt.id) }}" class="btn btn-secondary">✕ Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

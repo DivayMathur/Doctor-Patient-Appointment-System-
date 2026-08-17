@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Appointments{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1>📅 Appointments</h1>
+    <p>Manage all clinic appointments</p>
+  </div>
+  <a href="{{ url_for('appointments_add') }}" class="btn btn-primary">➕ New Appointment</a>
+</div>
+
+<div class="filter-tabs">
+  <a href="{{ url_for('appointments_list') }}"
+     class="filter-tab {{ 'active' if not status_filter else '' }}">All</a>
+  <a href="{{ url_for('appointments_list', status='Scheduled') }}"
+     class="filter-tab {{ 'active' if status_filter == 'Scheduled' else '' }}">📅 Scheduled</a>
+  <a href="{{ url_for('appointments_list', status='Completed') }}"
+     class="filter-tab {{ 'active' if status_filter == 'Completed' else '' }}">✅ Completed</a>
+  <a href="{{ url_for('appointments_list', status='Cancelled') }}"
+     class="filter-tab {{ 'active' if status_filter == 'Cancelled' else '' }}">❌ Cancelled</a>
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding:0">
+    {% if appointments %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Specialization</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in appointments %}
+          <tr>
+            <td>{{ a.id }}</td>
+            <td><strong>{{ a.patient_name }}</strong></td>
+            <td>Dr. {{ a.doctor_name }}</td>
+            <td><span class="badge badge-primary">{{ a.specialization }}</span></td>
+            <td>{{ a.appointment_date }}</td>
+            <td>{{ a.appointment_time }}</td>
+            <td>
+              {% if a.status == 'Scheduled' %}
+                <span class="badge badge-info">📅 Scheduled</span>
+              {% elif a.status == 'Completed' %}
+                <span class="badge badge-success">✅ Completed</span>
+              {% else %}
+                <span class="badge badge-danger">❌ Cancelled</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="action-group">
+                <a href="{{ url_for('appointments_detail', id=a.id) }}" class="btn btn-info btn-sm">👁 View</a>
+                <a href="{{ url_for('appointments_edit', id=a.id) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                <form method="POST" action="{{ url_for('appointments_delete', id=a.id) }}"
+                      onsubmit="return confirm('Delete appointment #{{ a.id }}?')" style="display:inline">
+                  <button class="btn btn-danger btn-sm" type="submit">🗑 Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">📭</div>
+      <h3>No appointments found</h3>
+      <p>{% if status_filter %}No {{ status_filter }} appointments.{% else %}Schedule the first appointment.{% endif %}</p>
+      <br>
+      <a href="{{ url_for('appointments_add') }}" class="btn btn-primary">➕ New Appointment</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

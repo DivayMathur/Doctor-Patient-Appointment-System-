@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Doctors{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1>👨‍⚕️ Doctors</h1>
+    <p>Manage all registered doctors</p>
+  </div>
+  <a href="{{ url_for('doctors_add') }}" class="btn btn-primary">➕ Add Doctor</a>
+</div>
+
+<form class="search-bar" method="GET">
+  <input class="form-control" type="text" name="search" placeholder="Search by name or specialization..."
+         value="{{ search }}">
+  <button class="btn btn-primary" type="submit">🔍 Search</button>
+  {% if search %}
+    <a href="{{ url_for('doctors_list') }}" class="btn btn-secondary">✕ Clear</a>
+  {% endif %}
+</form>
+
+<div class="card">
+  <div class="card-body" style="padding:0">
+    {% if doctors %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Specialization</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Available Days</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in doctors %}
+          <tr>
+            <td>{{ d.id }}</td>
+            <td><strong>Dr. {{ d.name }}</strong></td>
+            <td><span class="badge badge-primary">{{ d.specialization }}</span></td>
+            <td>{{ d.phone or '—' }}</td>
+            <td>{{ d.email or '—' }}</td>
+            <td>{{ d.available_days or '—' }}</td>
+            <td>
+              <div class="action-group">
+                <a href="{{ url_for('doctors_detail', id=d.id) }}" class="btn btn-info btn-sm">👁 View</a>
+                <a href="{{ url_for('doctors_edit', id=d.id) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                <form method="POST" action="{{ url_for('doctors_delete', id=d.id) }}"
+                      onsubmit="return confirm('Delete Dr. {{ d.name }}?')" style="display:inline">
+                  <button class="btn btn-danger btn-sm" type="submit">🗑 Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">👨‍⚕️</div>
+      <h3>No doctors found</h3>
+      <p>{% if search %}No results for "{{ search }}".{% else %}Add your first doctor to get started.{% endif %}</p>
+      <br>
+      <a href="{{ url_for('doctors_add') }}" class="btn btn-primary">➕ Add Doctor</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

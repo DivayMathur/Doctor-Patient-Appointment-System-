@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Dr. {{ doctor.name }}{% endblock %}
+{% block content %}
+
+<div class="breadcrumb">
+  <a href="{{ url_for('doctors_list') }}">👨‍⚕️ Doctors</a>
+  <span class="sep">›</span> Dr. {{ doctor.name }}
+</div>
+
+<div class="page-header">
+  <div>
+    <h1>👨‍⚕️ Dr. {{ doctor.name }}</h1>
+    <p><span class="badge badge-primary">{{ doctor.specialization }}</span></p>
+  </div>
+  <div class="action-group">
+    <a href="{{ url_for('doctors_edit', id=doctor.id) }}" class="btn btn-warning">✏️ Edit</a>
+    <form method="POST" action="{{ url_for('doctors_delete', id=doctor.id) }}"
+          onsubmit="return confirm('Delete Dr. {{ doctor.name }}?')">
+      <button class="btn btn-danger" type="submit">🗑 Delete</button>
+    </form>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+  <div class="card">
+    <div class="card-header"><h2>Contact Information</h2></div>
+    <div class="card-body">
+      <div class="detail-item">
+        <div class="label">📞 Phone</div>
+        <div class="value">{{ doctor.phone or 'Not provided' }}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">📧 Email</div>
+        <div class="value">{{ doctor.email or 'Not provided' }}</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">📅 Available Days</div>
+        <div class="value">{{ doctor.available_days or 'Not specified' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Quick Stats</h2></div>
+    <div class="card-body">
+      <div class="detail-item">
+        <div class="label">Total Appointments</div>
+        <div class="value" style="font-size:2rem; font-weight:700; color:var(--primary-light)">
+          {{ appointments | length }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:1.25rem">
+  <div class="card-header">
+    <h2>📋 Appointments</h2>
+    <a href="{{ url_for('appointments_add') }}" class="btn btn-primary btn-sm">➕ Schedule</a>
+  </div>
+  <div class="card-body" style="padding:0">
+    {% if appointments %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          {% for a in appointments %}
+          <tr>
+            <td>{{ a.patient_name }}</td>
+            <td>{{ a.appointment_date }}</td>
+            <td>{{ a.appointment_time }}</td>
+            <td>{{ a.reason or '—' }}</td>
+            <td>
+              {% if a.status == 'Scheduled' %}<span class="badge badge-info">📅 Scheduled</span>
+              {% elif a.status == 'Completed' %}<span class="badge badge-success">✅ Completed</span>
+              {% else %}<span class="badge badge-danger">❌ Cancelled</span>{% endif %}
+            </td>
+            <td><a href="{{ url_for('appointments_detail', id=a.id) }}" class="btn btn-secondary btn-sm">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding:2rem">
+      <div class="icon">📭</div>
+      <h3>No appointments</h3>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

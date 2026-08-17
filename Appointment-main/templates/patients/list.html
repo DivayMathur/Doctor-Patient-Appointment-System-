@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Patients{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1>🧑‍🤝‍🧑 Patients</h1>
+    <p>Manage all registered patients</p>
+  </div>
+  <a href="{{ url_for('patients_add') }}" class="btn btn-success">➕ Add Patient</a>
+</div>
+
+<form class="search-bar" method="GET">
+  <input class="form-control" type="text" name="search" placeholder="Search by name or phone..."
+         value="{{ search }}">
+  <button class="btn btn-primary" type="submit">🔍 Search</button>
+  {% if search %}
+    <a href="{{ url_for('patients_list') }}" class="btn btn-secondary">✕ Clear</a>
+  {% endif %}
+</form>
+
+<div class="card">
+  <div class="card-body" style="padding:0">
+    {% if patients %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in patients %}
+          <tr>
+            <td>{{ p.id }}</td>
+            <td><strong>{{ p.name }}</strong></td>
+            <td>{{ p.age or '—' }}</td>
+            <td>
+              {% if p.gender == 'Male' %}
+                <span class="badge badge-info">♂ Male</span>
+              {% elif p.gender == 'Female' %}
+                <span class="badge badge-warning">♀ Female</span>
+              {% else %}
+                <span class="badge badge-secondary">— Other</span>
+              {% endif %}
+            </td>
+            <td>{{ p.phone or '—' }}</td>
+            <td>{{ p.email or '—' }}</td>
+            <td>
+              <div class="action-group">
+                <a href="{{ url_for('patients_detail', id=p.id) }}" class="btn btn-info btn-sm">👁 View</a>
+                <a href="{{ url_for('patients_edit', id=p.id) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                <form method="POST" action="{{ url_for('patients_delete', id=p.id) }}"
+                      onsubmit="return confirm('Delete {{ p.name }}?')" style="display:inline">
+                  <button class="btn btn-danger btn-sm" type="submit">🗑 Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">🧑</div>
+      <h3>No patients found</h3>
+      <p>{% if search %}No results for "{{ search }}".{% else %}Add your first patient to get started.{% endif %}</p>
+      <br>
+      <a href="{{ url_for('patients_add') }}" class="btn btn-success">➕ Add Patient</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Doctor Patient Appointment System{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-brand" href="{{ url_for('index') }}">
+    <span>🏥</span> Doctor Patient Appointment System
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="{{ url_for('index') }}"
+           class="{{ 'active' if request.endpoint == 'index' else '' }}">🏠 Dashboard</a></li>
+    <li><a href="{{ url_for('doctors_list') }}"
+           class="{{ 'active' if 'doctors' in request.endpoint else '' }}">👨‍⚕️ Doctors</a></li>
+    <li><a href="{{ url_for('patients_list') }}"
+           class="{{ 'active' if 'patients' in request.endpoint else '' }}">🧑‍🤝‍🧑 Patients</a></li>
+    <li><a href="{{ url_for('appointments_list') }}"
+           class="{{ 'active' if 'appointments' in request.endpoint else '' }}">📅 Appointments</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {% if category == 'success' %}✅{% elif category == 'danger' %}❌{% else %}ℹ️{% endif %}
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
